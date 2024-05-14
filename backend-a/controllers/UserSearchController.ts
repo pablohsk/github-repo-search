@@ -11,7 +11,7 @@ export class UserSearchController {
   async searchUsers(req: Request, res: Response) {
     try {
       // Extrair parâmetros da solicitação (se necessário)
-      const { query } = req.query;
+      const query: string = req.query.query as string;
 
       // Verificar se o parâmetro de consulta está presente
       if (!query) {
