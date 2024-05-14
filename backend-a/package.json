@@ -1,0 +1,25 @@
+{
+    "name": "backend-a",
+    "version": "1.0.0",
+    "description": "Backend A for GitHub Repository Search",
+    "main": "dist/app.ts", 
+    "scripts": {
+      "start": "node dist/app.ts",
+      "build": "tsc",
+      "watch": "tsc -w",
+      "lint": "eslint . --ext .ts"
+    },
+    "keywords": [],
+    "author": "pablohsk",
+    "license": "ISC",
+    "dependencies": {
+      "axios": "^1.6.8",
+      "express": "^4.17.1",
+      "amqplib": "^0.7.0"
+    },
+    "devDependencies": {
+      "typescript": "^4.5.4",
+      "eslint": "^8.5.0",
+      "@types/node": "^17.0.6"
+    }
+  }
