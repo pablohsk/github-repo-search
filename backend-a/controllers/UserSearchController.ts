@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { UserSearchService } from '../services/UserSearchService.ts';
+import { UserSearchService } from '../services/UserSearchService';
 
 export class UserSearchController {
   private userSearchService: UserSearchService;
