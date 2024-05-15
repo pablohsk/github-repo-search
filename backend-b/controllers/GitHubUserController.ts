@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { GitHubUserService } from '../services/GitHubUserService';
+import { RabbitMQService } from '../services/RabbitMQService';
 
 export class GitHubUserController {
-  private gitHubUserService: GitHubUserService;
+  private rabbitMQService: RabbitMQService;
 
   constructor() {
-    this.gitHubUserService = new GitHubUserService();
+    this.rabbitMQService = new RabbitMQService('search-request', 'rabbitmq_url'); // Substitua 'rabbitmq_url' pela URL do seu servidor RabbitMQ
   }
 
   async searchUsers(req: Request, res: Response) {
@@ -16,9 +16,10 @@ export class GitHubUserController {
         return res.status(400).json({ error: 'Parâmetro de consulta ausente' });
       }
 
-      const users = await this.gitHubUserService.searchUsers(query);
+      // Enviar solicitação para o Backend B via RabbitMQ
+      await this.rabbitMQService.sendMessage({ query });
 
-      return res.json(users);
+      return res.status(202).json({ message: 'Solicitação de busca enviada' });
     } catch (error) {
       console.error('Erro ao buscar usuários:', error);
       return res.status(500).json({ error: 'Erro interno do servidor' });

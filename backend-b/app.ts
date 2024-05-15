@@ -1,7 +1,7 @@
 import express, { Application, Request, Response } from 'express';
 import { GitHubUserController } from './controllers/GitHubUserController';
 
-export class App {
+class App {
   private app: Application;
   private gitHubUserController: GitHubUserController;
 
@@ -12,7 +12,7 @@ export class App {
   }
 
   private setupRoutes(): void {
-    this.app.get('/search-users', this.gitHubUserController.searchUsers.bind(this.gitHubUserController));
+    this.app.get('/search-users', (req: Request, res: Response) => this.gitHubUserController.searchUsers(req, res));
   }
 
   public start(port: number): void {
