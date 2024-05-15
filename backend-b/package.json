@@ -1,0 +1,27 @@
+{
+    "name": "backend-b",
+    "version": "1.0.0",
+    "description": "Backend B for GitHub Repository Search",
+    "type": "commonjs",
+    "scripts": {
+        "start": "node --experimental-specifier-resolution=node dist/app.js",
+        "build": "tsc",
+        "watch": "tsc -w",
+        "lint": "eslint . --ext .ts"
+    },
+    "keywords": [],
+    "author": "yourname",
+    "license": "ISC",
+    "dependencies": {
+        "amqplib": "^0.7.0",
+        "axios": "^1.6.8",
+        "express": "^4.17.1"
+    },
+    "devDependencies": {
+        "@types/amqplib": "^0.10.5",
+        "@types/express": "^4.17.13",
+        "@types/node": "^20.12.12",
+        "eslint": "^8.5.0",
+        "typescript": "^5.4.5"
+    }
+}
