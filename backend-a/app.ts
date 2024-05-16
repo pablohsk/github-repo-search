@@ -1,5 +1,6 @@
 import express, { Application, Request, Response } from 'express';
 import { UserSearchController } from './controllers/UserSearchController';
+import 'reflect-metadata';
 
 class App {
   private app: Application;
@@ -13,6 +14,7 @@ class App {
 
   private setupRoutes(): void {
     this.app.get('/search-users', this.userSearchController.searchUsers.bind(this.userSearchController));
+    this.app.delete('/remove-repository/:repositoryId', this.userSearchController.removeRepository.bind(this.userSearchController));
   }
 
   public start(port: number): void {

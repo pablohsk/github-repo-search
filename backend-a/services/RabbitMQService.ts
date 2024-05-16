@@ -11,22 +11,18 @@ export class RabbitMQService {
 
   async sendMessage(message: any) {
     try {
-      // Conectar ao servidor RabbitMQ
       amqp.connect(this.rabbitMQUrl, (error, connection) => {
         if (error) {
           throw new Error('Erro ao conectar ao RabbitMQ');
         }
 
-        // Criar um canal para comunicação
         connection.createChannel((error, channel) => {
           if (error) {
             throw new Error('Erro ao criar canal de comunicação');
           }
 
-          // Declarar a fila de destino
           channel.assertQueue(this.queueName, { durable: false });
 
-          // Enviar a mensagem para a fila
           channel.sendToQueue(this.queueName, Buffer.from(JSON.stringify(message)));
 
           console.log(`[RabbitMQ] Mensagem enviada: ${JSON.stringify(message)}`);
@@ -40,22 +36,18 @@ export class RabbitMQService {
 
   async receiveMessage(callback: (message: any) => void) {
     try {
-      // Conectar ao servidor RabbitMQ
       amqp.connect(this.rabbitMQUrl, (error, connection) => {
         if (error) {
           throw new Error('Erro ao conectar ao RabbitMQ');
         }
 
-        // Criar um canal para comunicação
         connection.createChannel((error, channel) => {
           if (error) {
             throw new Error('Erro ao criar canal de comunicação');
           }
 
-          // Declarar a fila de origem
           channel.assertQueue(this.queueName, { durable: false });
 
-          // Consumir mensagens da fila
           channel.consume(this.queueName, (message) => {
             if (message) {
               const content = message.content.toString();
@@ -64,7 +56,6 @@ export class RabbitMQService {
 
               console.log(`[RabbitMQ] Mensagem recebida: ${content}`);
 
-              // Confirmar o recebimento da mensagem
               channel.ack(message);
             }
           });

@@ -1,10 +1,11 @@
+"use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const UserSearchController_1 = require("./controllers/UserSearchController");
-require = require('esm')(module /*, options*/); // Adicione esta linha
+require("reflect-metadata");
 class App {
     app;
     userSearchController;
@@ -15,6 +16,7 @@ class App {
     }
     setupRoutes() {
         this.app.get('/search-users', this.userSearchController.searchUsers.bind(this.userSearchController));
+        this.app.delete('/remove-repository/:repositoryId', this.userSearchController.removeRepository.bind(this.userSearchController));
     }
     start(port) {
         this.app.listen(port, () => {
