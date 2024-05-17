@@ -11,3 +11,33 @@ services:
       - "3306:3306"
     volumes:
       - ./data:/var/lib/mysql
+
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: root
+      RABBITMQ_DEFAULT_PASS: root
+
+  backend-a:
+    build: ./backend-a
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - RABBITMQ_URL=amqp://root:root@rabbitmq:5672 
+    depends_on:
+      - rabbitmq 
+
+  backend-b:
+    build: ./backend-b
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - RABBITMQ_URL=amqp://root:root@rabbitmq:5672
+    depends_on:
+      - rabbitmq

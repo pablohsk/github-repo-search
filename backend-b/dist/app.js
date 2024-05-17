@@ -3,7 +3,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.App = void 0;
 const express_1 = __importDefault(require("express"));
 const GitHubUserController_1 = require("./controllers/GitHubUserController");
 class App {
@@ -15,7 +14,7 @@ class App {
         this.setupRoutes();
     }
     setupRoutes() {
-        this.app.get('/search-users', this.gitHubUserController.searchUsers.bind(this.gitHubUserController));
+        this.app.get('/search-users', (req, res) => this.gitHubUserController.searchUsers(req, res));
     }
     start(port) {
         this.app.listen(port, () => {
@@ -23,7 +22,6 @@ class App {
         });
     }
 }
-exports.App = App;
 const app = new App();
-const PORT = parseInt(process.env.PORT, 10) || 3000;
+const PORT = parseInt(process.env.PORT, 10) || 3001;
 app.start(PORT);

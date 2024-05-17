@@ -1,7 +1,14 @@
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Repository } from './Repository';
+
+@Entity()
 export class UserSearchRequest {
-    query: string;
-  
-    constructor(query: string) {
-      this.query = query;
-    }
-  }  
+  @PrimaryGeneratedColumn()
+  id: number = 0;
+
+  @Column()
+  query: string = '';
+
+  @OneToMany(() => Repository, repository => repository.userSearchRequest, { cascade: true })
+  repositories: Repository[] = [];
+}

@@ -2,60 +2,58 @@ import * as amqp from 'amqplib/callback_api';
 
 export class RabbitMQService {
   private readonly queueName: string;
-  private readonly rabbitMQUrl: string;
+  private rabbitMQUrl: string = '';
 
-  constructor(queueName: string, rabbitMQUrl: string) {
+  constructor(queueName: string) {
     this.queueName = queueName;
-    this.rabbitMQUrl = rabbitMQUrl;
+  }
+
+  setRabbitMQUrl(url: string) {
+    this.rabbitMQUrl = url;
   }
 
   async sendMessage(message: any) {
-    try {
-      // Conectar ao servidor RabbitMQ
+    return new Promise<void>((resolve, reject) => {
       amqp.connect(this.rabbitMQUrl, (error, connection) => {
         if (error) {
-          throw new Error('Erro ao conectar ao RabbitMQ');
+          reject(new Error('Erro ao conectar ao RabbitMQ'));
+          return;
         }
 
-        // Criar um canal para comunicação
         connection.createChannel((error, channel) => {
           if (error) {
-            throw new Error('Erro ao criar canal de comunicação');
+            reject(new Error('Erro ao criar canal de comunicação'));
+            return;
           }
 
-          // Declarar a fila de destino
           channel.assertQueue(this.queueName, { durable: false });
 
-          // Enviar a mensagem para a fila
           channel.sendToQueue(this.queueName, Buffer.from(JSON.stringify(message)));
 
           console.log(`[RabbitMQ] Mensagem enviada: ${JSON.stringify(message)}`);
+
+          resolve();
         });
       });
-    } catch (error) {
-      console.error('Erro ao enviar mensagem para o RabbitMQ:', error);
-      throw new Error('Erro ao enviar mensagem para o RabbitMQ');
-    }
+    });
   }
 
   async receiveMessage(callback: (message: any) => void) {
-    try {
-      // Conectar ao servidor RabbitMQ
+    return new Promise<void>((resolve, reject) => {
       amqp.connect(this.rabbitMQUrl, (error, connection) => {
         if (error) {
-          throw new Error('Erro ao conectar ao RabbitMQ');
+          reject(new Error('Erro ao conectar ao RabbitMQ'));
+          return;
         }
 
-        // Criar um canal para comunicação
         connection.createChannel((error, channel) => {
           if (error) {
-            throw new Error('Erro ao criar canal de comunicação');
+            reject(new Error('Erro ao criar canal de comunicação'));
+            return;
           }
 
-          // Declarar a fila de origem
           channel.assertQueue(this.queueName, { durable: false });
 
-          // Consumir mensagens da fila
           channel.consume(this.queueName, (message) => {
             if (message) {
               const content = message.content.toString();
@@ -64,15 +62,13 @@ export class RabbitMQService {
 
               console.log(`[RabbitMQ] Mensagem recebida: ${content}`);
 
-              // Confirmar o recebimento da mensagem
               channel.ack(message);
             }
           });
+
+          resolve();
         });
       });
-    } catch (error) {
-      console.error('Erro ao receber mensagem do RabbitMQ:', error);
-      throw new Error('Erro ao receber mensagem do RabbitMQ');
-    }
+    });
   }
 }

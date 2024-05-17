@@ -1,0 +1,24 @@
+{
+  "type": "mysql",
+  "host": "mariadb",
+  "port": 3306,
+  "username": "root",
+  "password": "root",
+  "database": "db1",
+  "synchronize": true,
+  "logging": false,
+  "entities": [
+    "dist/models/**/*.js"
+  ],
+  "migrations": [
+    "dist/migration/**/*.js"
+  ],
+  "subscribers": [
+    "dist/subscriber/**/*.js"
+  ],
+  "cli": {
+    "entitiesDir": "src/models",
+    "migrationsDir": "src/migration",
+    "subscribersDir": "src/subscriber"
+  }
+}

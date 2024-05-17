@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GitHubUserController = void 0;
-const GitHubUserService_1 = require("../services/GitHubUserService");
+const RabbitMQService_1 = require("../services/RabbitMQService");
 class GitHubUserController {
-    gitHubUserService;
+    rabbitMQService;
     constructor() {
-        this.gitHubUserService = new GitHubUserService_1.GitHubUserService();
+        this.rabbitMQService = new RabbitMQService_1.RabbitMQService('search-request', 'rabbitmq_url'); // Substitua 'rabbitmq_url' pela URL do seu servidor RabbitMQ
     }
     async searchUsers(req, res) {
         try {
@@ -13,8 +13,9 @@ class GitHubUserController {
             if (!query) {
                 return res.status(400).json({ error: 'Parâmetro de consulta ausente' });
             }
-            const users = await this.gitHubUserService.searchUsers(query);
-            return res.json(users);
+            // Enviar solicitação para o Backend B via RabbitMQ
+            await this.rabbitMQService.sendMessage({ query });
+            return res.status(202).json({ message: 'Solicitação de busca enviada' });
         }
         catch (error) {
             console.error('Erro ao buscar usuários:', error);
