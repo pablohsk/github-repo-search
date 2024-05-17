@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 
-const UserSearchBar = ({ onSearch }) => {
+interface UserSearchBarProps {
+  onSearch: (query: string) => void;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const UserSearchBar: React.FC<UserSearchBarProps> = ({ onSearch, setSearchQuery }) => {
   const [query, setQuery] = useState('');
 
   const handleSearch = () => {
@@ -12,7 +17,10 @@ const UserSearchBar = ({ onSearch }) => {
       <input
         type="text"
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(e) => {
+          setQuery(e.target.value);
+          setSearchQuery(e.target.value); // Defina a query também no estado do componente pai, se necessário
+        }}
         placeholder="Search GitHub users..."
       />
       <button onClick={handleSearch}>Search</button>

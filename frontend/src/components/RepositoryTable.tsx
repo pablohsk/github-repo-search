@@ -1,6 +1,19 @@
 import React from 'react';
 
-const RepositoryTable = ({ repositories, onRemove }) => {
+interface Repository {
+  id: string;
+  name: string;
+  fullName: string;
+  description: string;
+  htmlUrl: string;
+}
+
+interface RepositoryTableProps {
+  repositories: Repository[];
+  onRemove: (id: string) => void;
+}
+
+const RepositoryTable: React.FC<RepositoryTableProps> = ({ repositories, onRemove }) => {
   return (
     <table>
       <thead>

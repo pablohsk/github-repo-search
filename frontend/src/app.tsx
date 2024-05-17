@@ -1,25 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import UserSearchBar from './components/UserSearchBar';
 import RepositoryTable from './components/RepositoryTable';
 import axios from 'axios';
+import './App.css';
 
-// Definir o tipo para os repositórios
+// Interface para o tipo do repositório
 interface Repository {
-  id: number;
+  id: string;
   name: string;
-  full_name: string;
+  fullName: string;
   description: string;
-  // Adicione outras propriedades conforme necessário
+  htmlUrl: string;
 }
 
-const App = () => {
+const App: React.FC = () => {
+  // Estado para os repositórios e para o estado de carregamento
   const [repositories, setRepositories] = useState<Repository[]>([]);
   const [loading, setLoading] = useState(false);
+  // Estado para a query de pesquisa
+  const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    fetchRepositories();
-  }, []);
-
+  // Função para buscar os repositórios
   const fetchRepositories = async () => {
     try {
       setLoading(true);
@@ -32,10 +33,11 @@ const App = () => {
     }
   };
 
-  const handleSearch = async (query: string) => {
+  // Função para lidar com a pesquisa
+  const handleSearch = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`/api/search-users?query=${query}`);
+      const response = await axios.get(`/api/search-users?query=${searchQuery}`);
       console.log(response.data);
     } catch (error) {
       console.error('Error searching users:', error);
@@ -44,7 +46,8 @@ const App = () => {
     }
   };
 
-  const handleRemove = async (repositoryId: number) => {
+  // Função para remover um repositório
+  const handleRemove = async (repositoryId: string) => {
     try {
       setLoading(true);
       await axios.delete(`/api/remove-repository/${repositoryId}`);
@@ -57,10 +60,17 @@ const App = () => {
   };
 
   return (
-    <div>
-      <h1>GitHub Repository Search</h1>
-      <UserSearchBar onSearch={handleSearch} />
-      {loading ? <p>Loading...</p> : <RepositoryTable repositories={repositories} onRemove={handleRemove} />}
+    <div className="app-container">
+      {/* Título centralizado */}
+      <h1 className="app-title">GitHub Repository Search</h1>
+      {/* Barra de pesquisa e botão de pesquisa */}
+      <div className="search-container">
+        <UserSearchBar onSearch={handleSearch} setSearchQuery={setSearchQuery} />
+      </div>
+      {/* Componente de tabela de repositórios */}
+      <div className="repository-container">
+        {loading ? <p>Loading...</p> : <RepositoryTable repositories={repositories} onRemove={handleRemove} />}
+      </div>
     </div>
   );
 }
