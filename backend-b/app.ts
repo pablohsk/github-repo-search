@@ -23,5 +23,5 @@ class App {
 }
 
 const app = new App();
-const PORT: number = parseInt(process.env.PORT as string, 10) || 3000;
+const PORT: number = parseInt(process.env.PORT as string, 10) || 3002;
 app.start(PORT);

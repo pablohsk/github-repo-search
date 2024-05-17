@@ -1,26 +1,23 @@
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { UserSearchRequest } from './UserSearchRequest';
 
+@Entity()
 export class Repository {
-  id: number;
-  name: string;
-  fullName: string;
-  description: string;
-  htmlUrl: string;
-  userSearchRequest?: UserSearchRequest;
+  @PrimaryGeneratedColumn()
+  id: number = 0;
 
-  constructor(
-    id: number = 0,
-    name: string = '',
-    fullName: string = '',
-    description: string = '',
-    htmlUrl: string = '',
-    userSearchRequest?: UserSearchRequest
-  ) {
-    this.id = id;
-    this.name = name;
-    this.fullName = fullName;
-    this.description = description;
-    this.htmlUrl = htmlUrl;
-    this.userSearchRequest = userSearchRequest;
-  }
+  @Column()
+  name: string = '';
+
+  @Column()
+  fullName: string = '';
+
+  @Column()
+  description: string = '';
+
+  @Column()
+  htmlUrl: string = '';
+
+  @ManyToOne(() => UserSearchRequest, userSearchRequest => userSearchRequest.repositories)
+  userSearchRequest?: UserSearchRequest;
 }

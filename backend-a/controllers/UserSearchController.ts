@@ -8,7 +8,8 @@ export class UserSearchController {
 
   constructor() {
     this.userSearchService = new UserSearchService();
-    this.rabbitMQService = new RabbitMQService('search-request', 'rabbitmq_url'); // Substitua 'rabbitmq_url' pela URL do seu servidor RabbitMQ
+    this.rabbitMQService = new RabbitMQService('search-request');
+    this.rabbitMQService.setRabbitMQUrl('amqp://root:root@rabbitmq:5672');
   }
 
   async searchUsers(req: Request, res: Response) {

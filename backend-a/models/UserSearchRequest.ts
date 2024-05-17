@@ -4,11 +4,11 @@ import { Repository } from './Repository';
 @Entity()
 export class UserSearchRequest {
   @PrimaryGeneratedColumn()
-  id: number = 0; // Inicializador para 'id'
+  id: number = 0;
 
   @Column()
-  query: string = ''; // Inicializador para 'query'
+  query: string = '';
 
-  @OneToMany(() => Repository, repository => repository.userSearchRequest)
-  repositories: Repository[] = []; // Inicializador para 'repositories'
+  @OneToMany(() => Repository, repository => repository.userSearchRequest, { cascade: true })
+  repositories: Repository[] = [];
 }

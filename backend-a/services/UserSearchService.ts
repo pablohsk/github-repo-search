@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { getRepository } from 'typeorm'; // Importe a função getRepository
+import { getRepository } from 'typeorm';
 import { UserSearchRequest } from '../models/UserSearchRequest';
-import { Repository } from '../models/Repository';
+import { Repository as RepositoryEntity } from '../models/Repository';
 
 export class UserSearchService {
   async searchUsers(query: string) {
@@ -17,26 +17,27 @@ export class UserSearchService {
         };
         
         const reposResponse = await axios.get(item.repos_url);
-        const repositories: Repository[] = reposResponse.data.map((repo: any) => ({
+        const repositories: RepositoryEntity[] = reposResponse.data.map((repo: any) => ({
           id: repo.id,
           name: repo.name,
           fullName: repo.full_name,
           description: repo.description,
-          htmlUrl: repo.html_url
+          htmlUrl: repo.html_url,
+          userSearchRequest: null
         }));
-        
-        // Criar uma nova instância de UserSearchRequest com os dados
+
         const userSearchRequest = new UserSearchRequest();
-        
-        // Salvar a instância de UserSearchRequest no banco de dados usando o repositório correspondente
+        userSearchRequest.query = query;  
+        userSearchRequest.repositories = repositories;
+
         const userSearchRequestRepository = getRepository(UserSearchRequest);
         await userSearchRequestRepository.save(userSearchRequest);
-        
+
         return {
           ...userData,
           repositories: repositories
         };
-      }));   
+      }));
 
       return users;
     } catch (error) {
@@ -51,10 +52,9 @@ export class UserSearchService {
         throw new Error('ID do repositório inválido');
       }
   
-      const repositoryRepository = getRepository(Repository);
+      const repositoryRepository = getRepository(RepositoryEntity);
       const repository = await repositoryRepository.findOne({ where: { id: repositoryId } });
 
-  
       if (!repository) {
         throw new Error('Repositório não encontrado');
       }
@@ -64,6 +64,7 @@ export class UserSearchService {
       console.log(`Repositório ${repositoryId} removido com sucesso.`);
     } catch (error) {
       console.error('Erro ao remover repositório:', error);
+      throw new Error('Erro ao remover repositório');
     }
   }
-}  
+}

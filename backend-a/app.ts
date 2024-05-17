@@ -1,6 +1,7 @@
-import express, { Application, Request, Response } from 'express';
+import express, { Application } from 'express';
 import { UserSearchController } from './controllers/UserSearchController';
 import 'reflect-metadata';
+import { createConnection } from 'typeorm';
 
 class App {
   private app: Application;
@@ -10,11 +11,21 @@ class App {
     this.app = express();
     this.userSearchController = new UserSearchController();
     this.setupRoutes();
+    this.initializeDatabase();
   }
 
   private setupRoutes(): void {
     this.app.get('/search-users', this.userSearchController.searchUsers.bind(this.userSearchController));
     this.app.delete('/remove-repository/:repositoryId', this.userSearchController.removeRepository.bind(this.userSearchController));
+  }
+
+  private async initializeDatabase(): Promise<void> {
+    try {
+      await createConnection();
+      console.log('Conectado ao banco de dados');
+    } catch (error) {
+      console.error('Erro ao conectar ao banco de dados', error);
+    }
   }
 
   public start(port: number): void {
